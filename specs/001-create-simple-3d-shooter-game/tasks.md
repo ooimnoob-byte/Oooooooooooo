@@ -25,8 +25,8 @@
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Initialize npm project with Vitest devDependency in package.json (`"vitest": "^1.6.0"`, `"type": "module"`, `"test"` / `"coverage"` scripts)
-- [ ] T002 Create index.html with Three.js importmap (esm.sh CDN v0.163), full CSS layout, game canvas (`<canvas id="game-canvas">`), HUD elements (`#health-bar`, `#health-text`, `#score-text`, `#wave-text`, `#crosshair`), start overlay (`#start-screen`), and game over overlay (`#gameover-screen` with `#restart-btn`)
+- [X] T001 Initialize npm project with Vitest devDependency in package.json (`"vitest": "^1.6.0"`, `"type": "module"`, `"test"` / `"coverage"` scripts)
+- [X] T002 Create index.html with Three.js importmap (esm.sh CDN v0.163), full CSS layout, game canvas (`<canvas id="game-canvas">`), HUD elements (`#health-bar`, `#health-text`, `#score-text`, `#wave-text`, `#crosshair`), start overlay (`#start-screen`), and game over overlay (`#gameover-screen` with `#restart-btn`)
 
 ---
 
@@ -36,10 +36,10 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 Create src/player.js — export `createPlayer()` returning `{ hp, maxHp, speed, isAlive(), takeDamage(amount), reset() }`; `hp` clamped to `[0, maxHp]`; `isAlive()` returns `hp > 0`
-- [ ] T004 [P] Create src/enemy.js — export `createEnemy(position, speedMultiplier)` returning `{ id, hp, position, speed, damage, isAlive(), takeDamage(amount), moveToward(target, dt) }`; export helper `distanceXZ(a, b)`
-- [ ] T005 [P] Create src/bullet.js — export `createBullet(position, direction)` returning `{ id, position, direction, speed:20, maxRange:50, distanceTraveled, active }`; export `updateBullet(bullet, dt)` (moves bullet, deactivates when `distanceTraveled >= maxRange`); export `checkBulletEnemyCollision(bullet, enemy)` returning true when distance < 0.8
-- [ ] T006 [P] Create src/wave.js — export `createWaveManager()` returning `{ wave, enemiesPerWave(), startWave(), onEnemyKilled(), allDefeated(), nextWave() }`; `enemiesPerWave()` returns `3 + wave * 2`
+- [X] T003 Create src/player.js — export `createPlayer()` returning `{ hp, maxHp, speed, isAlive(), takeDamage(amount), reset() }`; `hp` clamped to `[0, maxHp]`; `isAlive()` returns `hp > 0`
+- [X] T004 [P] Create src/enemy.js — export `createEnemy(position, speedMultiplier)` returning `{ id, hp, position, speed, damage, isAlive(), takeDamage(amount), moveToward(target, dt) }`; export helper `distanceXZ(a, b)`
+- [X] T005 [P] Create src/bullet.js — export `createBullet(position, direction)` returning `{ id, position, direction, speed:20, maxRange:50, distanceTraveled, active }`; export `updateBullet(bullet, dt)` (moves bullet, deactivates when `distanceTraveled >= maxRange`); export `checkBulletEnemyCollision(bullet, enemy)` returning true when distance < 0.8
+- [X] T006 [P] Create src/wave.js — export `createWaveManager()` returning `{ wave, enemiesPerWave(), startWave(), onEnemyKilled(), allDefeated(), nextWave() }`; `enemiesPerWave()` returns `3 + wave * 2`
 
 **Checkpoint**: Foundation ready — all pure-JS entity modules exist and can be unit-tested before Three.js integration
 
@@ -53,9 +53,9 @@
 
 ### Implementation for User Story 1
 
-- [ ] T007 [US1] Create src/scene.js — export `createScene(renderer)` building a Three.js `Scene` with sky-blue background, fog, ambient + directional lights, textured floor plane (40×40), and four arena walls in src/scene.js
-- [ ] T008 [US1] Create src/game.js — initialize `WebGLRenderer`, `PerspectiveCamera`, `PointerLockControls`; implement `gameState` (`idle | playing | gameover`); wire canvas click to `controls.lock()`; start `renderer.setAnimationLoop` with `Clock.getDelta()` in src/game.js
-- [ ] T009 [US1] Implement `pointerlockchange` listener in src/game.js: on lock → set `gameState = 'playing'`, hide `#start-screen`; on unlock → show `#start-screen` if `gameState !== 'gameover'`
+- [X] T007 [US1] Create src/scene.js — export `createScene(renderer)` building a Three.js `Scene` with sky-blue background, fog, ambient + directional lights, textured floor plane (40×40), and four arena walls in src/scene.js
+- [X] T008 [US1] Create src/game.js — initialize `WebGLRenderer`, `PerspectiveCamera`, `PointerLockControls`; implement `gameState` (`idle | playing | gameover`); wire canvas click to `controls.lock()`; start `renderer.setAnimationLoop` with `Clock.getDelta()` in src/game.js
+- [X] T009 [US1] Implement `pointerlockchange` listener in src/game.js: on lock → set `gameState = 'playing'`, hide `#start-screen`; on unlock → show `#start-screen` if `gameState !== 'gameover'`
 
 **Checkpoint**: At this point, User Story 1 is independently testable — click to start, 3D arena visible, pointer lock active
 
@@ -69,8 +69,8 @@
 
 ### Implementation for User Story 2
 
-- [ ] T010 [US2] Add `keydown` / `keyup` event listeners for W/A/S/D in src/game.js; track movement flags in a `keys` object
-- [ ] T011 [US2] Integrate `controls.moveForward(player.speed * dt)` and `controls.moveRight(player.speed * dt)` in the game loop using `keys` flags and `deltaTime` in src/game.js
+- [X] T010 [US2] Add `keydown` / `keyup` event listeners for W/A/S/D in src/game.js; track movement flags in a `keys` object
+- [X] T011 [US2] Integrate `controls.moveForward(player.speed * dt)` and `controls.moveRight(player.speed * dt)` in the game loop using `keys` flags and `deltaTime` in src/game.js
 
 **Checkpoint**: User Story 2 independently testable — WASD movement works with frame-rate-independent speed
 
@@ -86,13 +86,13 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T012 [P] [US3] Write bullet unit tests: initial state, `updateBullet` position delta, deactivation at `maxRange`, `checkBulletEnemyCollision` true/false cases in tests/bullet.test.js
+- [X] T012 [P] [US3] Write bullet unit tests: initial state, `updateBullet` position delta, deactivation at `maxRange`, `checkBulletEnemyCollision` true/false cases in tests/bullet.test.js
 
 ### Implementation for User Story 3
 
-- [ ] T013 [US3] Add `mousedown` listener (button 0) in src/game.js: create bullet from camera position with `camera.getWorldDirection()` direction; enforce shoot cooldown (0.3 s)
-- [ ] T014 [US3] Implement bullet update in game loop: call `updateBullet(b, dt)` for each active bullet; remove inactive bullets from `bullets` array in src/game.js
-- [ ] T015 [US3] Add Three.js bullet mesh rendering in src/game.js: `SphereGeometry(0.1)` yellow mesh added to scene on fire; `scene.remove` + `dispose()` on deactivation
+- [X] T013 [US3] Add `mousedown` listener (button 0) in src/game.js: create bullet from camera position with `camera.getWorldDirection()` direction; enforce shoot cooldown (0.3 s)
+- [X] T014 [US3] Implement bullet update in game loop: call `updateBullet(b, dt)` for each active bullet; remove inactive bullets from `bullets` array in src/game.js
+- [X] T015 [US3] Add Three.js bullet mesh rendering in src/game.js: `SphereGeometry(0.1)` yellow mesh added to scene on fire; `scene.remove` + `dispose()` on deactivation
 
 **Checkpoint**: User Story 3 independently testable — unit tests pass; in-browser bullet fires, travels, and disappears at range
 
@@ -108,14 +108,14 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T016 [P] [US4] Write enemy unit tests: initial state, `isAlive()`, `takeDamage()`, `moveToward()` reduces distance, `distanceXZ()` accuracy in tests/enemy.test.js
+- [X] T016 [P] [US4] Write enemy unit tests: initial state, `isAlive()`, `takeDamage()`, `moveToward()` reduces distance, `distanceXZ()` accuracy in tests/enemy.test.js
 
 ### Implementation for User Story 4
 
-- [ ] T017 [US4] Implement `spawnEnemy()` in src/game.js: random position on arena edge (±18 units XZ), `speedMultiplier = 1 + (wave − 1) * 0.1`; add to `enemies` array; create `BoxGeometry(1,2,1)` red mesh in scene
-- [ ] T018 [US4] Implement enemy AI update in game loop: call `enemy.moveToward(playerPos, dt)` for each alive enemy; sync Three.js mesh position with `enemy.position` in src/game.js
-- [ ] T019 [US4] Implement bullet-enemy collision loop in src/game.js: for each active bullet × alive enemy, call `checkBulletEnemyCollision()`; on hit → `enemy.takeDamage(30)`, deactivate bullet; if `!enemy.isAlive()` → remove enemy mesh, `score += 10`
-- [ ] T020 [US4] Remove dead enemy mesh on kill in src/game.js: `scene.remove(mesh)`, call `mesh.geometry.dispose()` and `mesh.material.dispose()`
+- [X] T017 [US4] Implement `spawnEnemy()` in src/game.js: random position on arena edge (±18 units XZ), `speedMultiplier = 1 + (wave − 1) * 0.1`; add to `enemies` array; create `BoxGeometry(1,2,1)` red mesh in scene
+- [X] T018 [US4] Implement enemy AI update in game loop: call `enemy.moveToward(playerPos, dt)` for each alive enemy; sync Three.js mesh position with `enemy.position` in src/game.js
+- [X] T019 [US4] Implement bullet-enemy collision loop in src/game.js: for each active bullet × alive enemy, call `checkBulletEnemyCollision()`; on hit → `enemy.takeDamage(30)`, deactivate bullet; if `!enemy.isAlive()` → remove enemy mesh, `score += 10`
+- [X] T020 [US4] Remove dead enemy mesh on kill in src/game.js: `scene.remove(mesh)`, call `mesh.geometry.dispose()` and `mesh.material.dispose()`
 
 **Checkpoint**: User Story 4 independently testable — unit tests pass; enemies spawn, chase, and are destroyed by bullets with correct scoring
 
@@ -131,12 +131,12 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T021 [P] [US5] Write player HP unit tests: initial `hp = 100`, `takeDamage` reduces HP, clamp at 0, `isAlive()` false at 0, `reset()` restores full HP in tests/player.test.js
+- [X] T021 [P] [US5] Write player HP unit tests: initial `hp = 100`, `takeDamage` reduces HP, clamp at 0, `isAlive()` false at 0, `reset()` restores full HP in tests/player.test.js
 
 ### Implementation for User Story 5
 
-- [ ] T022 [US5] Implement enemy-player collision in game loop in src/game.js: for each alive enemy, if `distanceXZ(enemy.position, playerPos) < 1.2` → `player.takeDamage(10)`, remove enemy (mesh + array)
-- [ ] T023 [US5] Add game over trigger in game loop in src/game.js: if `!player.isAlive()` → set `gameState = 'gameover'`; show `#gameover-screen`
+- [X] T022 [US5] Implement enemy-player collision in game loop in src/game.js: for each alive enemy, if `distanceXZ(enemy.position, playerPos) < 1.2` → `player.takeDamage(10)`, remove enemy (mesh + array)
+- [X] T023 [US5] Add game over trigger in game loop in src/game.js: if `!player.isAlive()` → set `gameState = 'gameover'`; show `#gameover-screen`
 
 **Checkpoint**: User Story 5 independently testable — unit tests pass; enemy contact reduces HP; HP = 0 shows game over overlay
 
@@ -150,8 +150,8 @@
 
 ### Implementation for User Story 6
 
-- [ ] T024 [P] [US6] Create src/hud.js — export `createHud()` returning `{ update({hp, maxHp, score, wave}) }`; updates `#health-bar` width and color, `#health-text`, `#score-text`, `#wave-text` in src/hud.js
-- [ ] T025 [US6] Call `hud.update({ hp: player.hp, maxHp: player.maxHp, score, wave: waveManager.wave })` each frame in game loop (playing state only) in src/game.js
+- [X] T024 [P] [US6] Create src/hud.js — export `createHud()` returning `{ update({hp, maxHp, score, wave}) }`; updates `#health-bar` width and color, `#health-text`, `#score-text`, `#wave-text` in src/hud.js
+- [X] T025 [US6] Call `hud.update({ hp: player.hp, maxHp: player.maxHp, score, wave: waveManager.wave })` each frame in game loop (playing state only) in src/game.js
 
 **Checkpoint**: User Story 6 independently testable — HUD reflects live game state correctly at each frame
 
@@ -165,8 +165,8 @@
 
 ### Implementation for User Story 7
 
-- [ ] T026 [US7] Implement game over display in src/game.js: on `gameState = 'gameover'` → show `#gameover-screen`, update final score text (`#final-score`), release pointer lock
-- [ ] T027 [US7] Implement restart handler in src/game.js: `#restart-btn` click → clear `enemies` array (dispose all meshes), clear `bullets` array, `player.reset()`, `score = 0`, `waveManager` reset, `gameState = 'idle'`, hide `#gameover-screen`, show `#start-screen`
+- [X] T026 [US7] Implement game over display in src/game.js: on `gameState = 'gameover'` → show `#gameover-screen`, update final score text (`#final-score`), release pointer lock
+- [X] T027 [US7] Implement restart handler in src/game.js: `#restart-btn` click → clear `enemies` array (dispose all meshes), clear `bullets` array, `player.reset()`, `score = 0`, `waveManager` reset, `gameState = 'idle'`, hide `#gameover-screen`, show `#start-screen`
 
 **Checkpoint**: User Story 7 independently testable — full game cycle: start → play → die → restart works end-to-end
 
@@ -182,13 +182,13 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T028 [P] [US8] Write WaveManager unit tests: `enemiesPerWave()` formula, `startWave()` resets count, `onEnemyKilled()` decrements, `allDefeated()` triggers after last kill, `nextWave()` increments wave in tests/wave.test.js
+- [X] T028 [P] [US8] Write WaveManager unit tests: `enemiesPerWave()` formula, `startWave()` resets count, `onEnemyKilled()` decrements, `allDefeated()` triggers after last kill, `nextWave()` increments wave in tests/wave.test.js
 
 ### Implementation for User Story 8
 
-- [ ] T029 [US8] Integrate `createWaveManager()` in src/game.js: call `waveManager.startWave()` when wave begins, `waveManager.onEnemyKilled()` on each enemy kill
-- [ ] T030 [US8] Implement wave completion check in game loop in src/game.js: if `waveManager.allDefeated()` → add wave bonus score (`+50`), delay 1500 ms, call `waveManager.nextWave()`, spawn next wave enemies
-- [ ] T031 [US8] Display wave transition feedback in src/game.js: briefly show wave number increment in `#wave-text` HUD during 1500 ms delay
+- [X] T029 [US8] Integrate `createWaveManager()` in src/game.js: call `waveManager.startWave()` when wave begins, `waveManager.onEnemyKilled()` on each enemy kill
+- [X] T030 [US8] Implement wave completion check in game loop in src/game.js: if `waveManager.allDefeated()` → add wave bonus score (`+50`), delay 1500 ms, call `waveManager.nextWave()`, spawn next wave enemies
+- [X] T031 [US8] Display wave transition feedback in src/game.js: briefly show wave number increment in `#wave-text` HUD during 1500 ms delay
 
 **Checkpoint**: User Story 8 independently testable — unit tests pass; waves auto-advance with correct enemy counts and bonus score
 
@@ -198,9 +198,9 @@
 
 **Purpose**: Deployment readiness and final validation
 
-- [ ] T032 [P] Verify GitHub Pages deployment — confirm `index.html` at repo root is served correctly via `python -m http.server`; check `importmap` loads Three.js from esm.sh CDN without errors
-- [ ] T033 Run `npm test` — all unit tests (`player.test.js`, `enemy.test.js`, `bullet.test.js`, `wave.test.js`) pass; run `npm run coverage` to confirm core logic coverage
-- [ ] T034 Validate all quickstart.md scenarios — WASD movement, mouse aiming, shooting, enemy kill scoring, player damage, game over, and restart all function correctly in Chrome, Firefox, and Edge
+- [X] T032 [P] Verify GitHub Pages deployment — confirm `index.html` at repo root is served correctly via `python -m http.server`; check `importmap` loads Three.js from esm.sh CDN without errors
+- [X] T033 Run `npm test` — all unit tests (`player.test.js`, `enemy.test.js`, `bullet.test.js`, `wave.test.js`) pass; run `npm run coverage` to confirm core logic coverage
+- [X] T034 Validate all quickstart.md scenarios — WASD movement, mouse aiming, shooting, enemy kill scoring, player damage, game over, and restart all function correctly in Chrome, Firefox, and Edge
 
 ---
 
