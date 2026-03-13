@@ -3,72 +3,68 @@
 **Branch**: `001-create-simple-3d-shooter-game` | **Date**: 2026-03-13 | **Spec**: [spec.md](./spec.md)
 **Input**: Feature specification from `/specs/001-create-simple-3d-shooter-game/spec.md`
 
-## Summary
+## 摘要
 
-以 Three.js 為核心渲染引擎，建立可在 GitHub Pages 部署的純前端 3D 第一人稱射擊遊戲。
-玩家可在 3D 場地中移動、瞄準並射擊向其靠近的敵人，具備波次系統與分數記錄。
+打造可在瀏覽器中直接遊玩的第一人稱 3D 射擊遊戲，部署於 GitHub Pages。使用 Three.js v0.163（CDN importmap）進行 3D 渲染，Pointer Lock API 控制視角，純靜態 HTML/JS 架構無需建構步驟，Vitest 驗證純邏輯模組（無需瀏覽器環境）。
 
-## Technical Context
+## 技術上下文
 
-**Language/Version**: JavaScript (ES2020 Modules)  
-**Primary Dependencies**: Three.js v0.163 (CDN via importmap)  
-**Storage**: N/A（無需持久化）  
-**Testing**: Vitest 1.x（純 JS 單元測試，不依賴 DOM）  
-**Target Platform**: 現代瀏覽器 (Chrome / Firefox / Edge)，GitHub Pages 靜態部署  
-**Project Type**: 靜態前端網頁遊戲  
-**Performance Goals**: 60 FPS，場景物件數量保持在 100 以下  
-**Constraints**: 純靜態檔案、無後端、無建構工具（用 importmap 直接引用 CDN）  
-**Scale/Scope**: 單一 HTML 入口 + 數個 JS 模組
+**Language/Version**: JavaScript（ES2020 Modules）  
+**Primary Dependencies**: Three.js v0.163（CDN importmap）、PointerLockControls（Three.js addons）  
+**Storage**: N/A（無持久化，遊戲狀態全在記憶體）  
+**Testing**: Vitest 1.x（`npm test`）  
+**Target Platform**: 現代瀏覽器（Chrome 90+、Firefox 88+、Edge 90+）；GitHub Pages 靜態部署  
+**Project Type**: 靜態網頁遊戲（browser game）  
+**Performance Goals**: 目標 60 FPS；場景保持簡單多邊形  
+**Constraints**: 純靜態前端，無後端、無建構工具；Three.js 透過 CDN 載入  
+**Scale/Scope**: 單一頁面應用，7 個 JS 模組，4 個測試檔
 
-## Constitution Check
+## 憲章核查
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+*關卡：Phase 0 研究前必須通過。Phase 1 設計後重新核查。*
 
-- [x] 文件與溝通是否使用繁體中文（必要英文術語除外）——所有規格與計畫文件均使用繁體中文
-- [x] 架構是否避免過度設計，且每項技術決策都有需求對應——純 HTML+JS 靜態，無後端無建構工具
-- [x] 是否定義 TDD 流程（先測試失敗再實作）——Vitest 測試先寫，核心邏輯解耦 DOM
-- [x] 是否規劃每階段 Git 狀態檢查——每個 report_progress 即為一次階段 commit
-- [x] 是否明確保護規格檔——specs/ 目錄下規格檔不得被實作程式碼覆蓋
-- [x] 若為網站專案，是否預設為可部署於 GitHub Pages 的靜態前端方案——是，純靜態 HTML/JS
+- [x] 文件與溝通是否使用繁體中文（必要英文術語除外）
+- [x] 架構是否避免過度設計，且每項技術決策都有需求對應
+- [x] 是否定義 TDD 流程（先測試失敗再實作）
+- [x] 是否規劃每階段 Git 狀態檢查
+- [x] 是否明確保護規格檔（`spec.md`/`plan.md`/`tasks.md`）不被覆蓋
+- [x] 若為網站專案，是否預設為可部署於 GitHub Pages 的靜態前端方案
 
-## Project Structure
+**Phase 1 設計後重新核查結果**：所有條款均符合。Three.js CDN importmap 方案避免 Vite/webpack 建構步驟（過度設計）；遊戲邏輯與 Three.js 分離，方便 Vitest 在 Node.js 環境直接測試；部署目標明確為 GitHub Pages 靜態方案。
 
-### Documentation (this feature)
+## 專案結構
+
+### 規格文件（本功能）
 
 ```text
 specs/001-create-simple-3d-shooter-game/
-├── spec.md
-├── plan.md
-├── research.md
-├── data-model.md
-├── quickstart.md
-└── contracts/
-    └── game-ui-contract.md
+├── spec.md          # 功能規格（speckit.specify 輸出）
+├── plan.md          # 本文件（speckit.plan 輸出）
+├── research.md      # Phase 0 研究報告（speckit.plan 輸出）
+├── data-model.md    # Phase 1 資料模型（speckit.plan 輸出）
+├── quickstart.md    # Phase 1 快速上手指南（speckit.plan 輸出）
+├── contracts/       # Phase 1 UI 合約（speckit.plan 輸出）
+│   └── game-ui-contract.md
+└── tasks.md         # Phase 2 任務清單（speckit.tasks 輸出——非本命令產生）
 ```
 
-### Source Code (repository root)
+### 原始碼（Repository 根目錄）
 
 ```text
-index.html              # 遊戲入口（可直接瀏覽器開啟或 GitHub Pages）
+index.html               # 入口：HTML 結構、CSS 樣式、importmap、HUD DOM
 src/
-├── game.js             # 主遊戲迴圈與初始化
-├── player.js           # 玩家邏輯（移動、射擊、血量）
-├── enemy.js            # 敵人邏輯（AI 移動、生命值）
-├── bullet.js           # 子彈邏輯（飛行、碰撞）
-├── scene.js            # Three.js 場景建置（地板、牆壁、燈光）
-├── hud.js              # HUD 更新（分數、血量、波次）
-└── wave.js             # 波次管理（敵人生成、難度遞增）
+├── game.js              # 主迴圈與初始化（Three.js 依賴，整合所有模組）
+├── scene.js             # 場景建置（地板、牆壁、燈光、天空；Three.js 依賴）
+├── player.js            # 玩家邏輯（純 JS，無 Three.js，可單元測試）
+├── enemy.js             # 敵人邏輯（純 JS，無 Three.js，可單元測試）
+├── bullet.js            # 子彈邏輯（純 JS，無 Three.js，可單元測試）
+├── wave.js              # 波次管理（純 JS，無 Three.js，可單元測試）
+└── hud.js               # HUD 更新（DOM 操作，依賴 index.html 元素）
 tests/
-├── player.test.js
-├── enemy.test.js
-├── bullet.test.js
-└── wave.test.js
-package.json            # vitest devDependency
+├── player.test.js       # 玩家血量、存活狀態單元測試
+├── enemy.test.js        # 敵人移動、受傷單元測試
+├── bullet.test.js       # 子彈飛行、碰撞單元測試
+└── wave.test.js         # 波次遞增、敵人計數單元測試
 ```
 
-**Structure Decision**: 單一靜態前端專案。遊戲邏輯模組化（各實體獨立 JS 模組）以便測試，
-Three.js 透過 importmap 從 CDN 載入，無需建構工具。
-
-## Complexity Tracking
-
-> 無憲章違規，無需填寫。
+**結構決策**：採用「純邏輯模組與渲染模組分離」策略。`player.js`、`enemy.js`、`bullet.js`、`wave.js` 刻意不引入 Three.js，使 Vitest 可在 Node.js 環境直接執行單元測試。`game.js` 負責整合所有模組與 Three.js 渲染，`scene.js` 與 `hud.js` 處理 DOM/Three.js 相關操作。此架構符合「簡潔與 TDD 優先」憲章原則。
