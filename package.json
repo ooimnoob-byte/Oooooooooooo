@@ -1,0 +1,14 @@
+{
+  "name": "simple-3d-shooter",
+  "version": "1.0.0",
+  "description": "簡單 3D 射擊遊戲 - 可部署於 GitHub Pages",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "vitest": "^1.6.0"
+  }
+}
