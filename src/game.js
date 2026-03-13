@@ -14,6 +14,7 @@ import { createHud } from './hud.js';
 const ENEMY_SPAWN_DISTANCE = 18;
 const PLAYER_ENEMY_HIT_DIST = 1.2;
 const SHOOT_COOLDOWN = 0.3; // 秒
+const WAVE_DELAY_MS = 1500; // 波次完成後延遲生成下一波的毫秒數
 
 // ── 全域狀態 ──────────────────────────────────────────────────────────────────
 let renderer, camera, controls, clock;
@@ -305,7 +306,7 @@ function updateGame(delta) {
     waveManager.nextWave();
     setTimeout(() => {
       if (gameStatus === 'playing') spawnWave();
-    }, 1500);
+    }, WAVE_DELAY_MS);
   }
 
   // 更新 HUD
