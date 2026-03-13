@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3D 射擊遊戲</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #000;
+      overflow: hidden;
+      font-family: 'Segoe UI', '微軟正黑體', sans-serif;
+      color: #fff;
+      user-select: none;
+    }
+
+    #game-canvas { position: fixed; inset: 0; }
+
+    /* ── 覆蓋畫面共通 ── */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.72);
+      z-index: 10;
+      gap: 16px;
+    }
+    .overlay h1 { font-size: 2.4rem; text-shadow: 0 2px 8px #000; }
+    .overlay p  { font-size: 1.1rem; color: #ccc; }
+    .overlay .hint {
+      margin-top: 8px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #4fc3f7;
+      animation: blink 1.2s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }
+
+    .key-list {
+      display: grid;
+      grid-template-columns: auto auto;
+      gap: 4px 24px;
+      font-size: 0.95rem;
+      margin-top: 4px;
+    }
+    .key-list kbd {
+      display: inline-block;
+      padding: 2px 8px;
+      background: #333;
+      border: 1px solid #666;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+
+    /* ── 遊戲結束畫面 ── */
+    #gameover-screen h1 { color: #f44336; }
+    #final-score { font-size: 1.5rem; color: #ffeb3b; }
+
+    button {
+      padding: 12px 32px;
+      font-size: 1.1rem;
+      background: #1976d2;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover { background: #1565c0; }
+
+    /* ── HUD ── */
+    #hud {
+      display: none;
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    #health-container {
+      position: absolute;
+      bottom: 24px;
+      left: 24px;
+      width: 200px;
+    }
+    #health-label {
+      font-size: 0.85rem;
+      margin-bottom: 4px;
+      opacity: 0.9;
+    }
+    #health-track {
+      width: 100%;
+      height: 14px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 7px;
+      overflow: hidden;
+    }
+    #health-bar {
+      height: 100%;
+      width: 100%;
+      background: #4caf50;
+      border-radius: 7px;
+      transition: width 0.15s, background-color 0.3s;
+    }
+    #health-text {
+      font-size: 0.8rem;
+      margin-top: 3px;
+      opacity: 0.85;
+    }
+
+    #score-wave {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      text-align: right;
+      line-height: 1.6;
+      text-shadow: 0 1px 4px #000;
+    }
+    #score-text { font-size: 1.3rem; font-weight: bold; }
+    #wave-text  { font-size: 1rem; opacity: 0.85; }
+
+    /* ── 準心 ── */
+    #crosshair {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 20px;
+      height: 20px;
+      pointer-events: none;
+    }
+    #crosshair::before,
+    #crosshair::after {
+      content: '';
+      position: absolute;
+      background: rgba(255, 255, 255, 0.85);
+    }
+    #crosshair::before {
+      width: 2px; height: 20px;
+      left: 9px; top: 0;
+    }
+    #crosshair::after {
+      width: 20px; height: 2px;
+      top: 9px; left: 0;
+    }
+  </style>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.163.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Three.js 渲染容器 -->
+  <div id="game-canvas"></div>
+
+  <!-- 開始畫面 -->
+  <div id="start-screen" class="overlay">
+    <h1 id="start-title">🎮 3D 射擊遊戲</h1>
+    <p>消滅所有敵人，存活到最後！</p>
+    <div class="key-list">
+      <span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 移動</span>
+      <span>🖱️ 滑鼠 瞄準</span>
+      <span>🖱️ 左鍵 射擊</span>
+      <span><kbd>ESC</kbd> 暫停</span>
+    </div>
+    <p class="hint" id="start-hint">點擊畫面開始遊戲</p>
+  </div>
+
+  <!-- 遊戲結束畫面 -->
+  <div id="gameover-screen" class="overlay" style="display:none">
+    <h1>💀 Game Over</h1>
+    <p id="final-score">最終分數：0</p>
+    <button id="restart-btn">🔄 重新開始</button>
+  </div>
+
+  <!-- HUD -->
+  <div id="hud">
+    <div id="health-container">
+      <div id="health-label">生命值</div>
+      <div id="health-track">
+        <div id="health-bar"></div>
+      </div>
+      <div id="health-text">HP: 100</div>
+    </div>
+    <div id="score-wave">
+      <div id="score-text">分數: 0</div>
+      <div id="wave-text">第 1 波</div>
+    </div>
+    <div id="crosshair"></div>
+  </div>
+
+  <script type="module">
+    import { init } from './src/game.js';
+    init();
+  </script>
+</body>
+</html>
