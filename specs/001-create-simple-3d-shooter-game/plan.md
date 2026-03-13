@@ -1,109 +1,70 @@
-# Implementation Plan: [FEATURE]
+# 實作計畫：簡單 3D 射擊遊戲
 
-**Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
-**Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
+**Branch**: `001-create-simple-3d-shooter-game` | **Date**: 2026-03-13 | **Spec**: [spec.md](./spec.md)
+**Input**: Feature specification from `/specs/001-create-simple-3d-shooter-game/spec.md`
 
-**Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/plan-template.md` for the execution workflow.
+## 摘要
 
-## Summary
+打造可在瀏覽器中直接遊玩的第一人稱 3D 射擊遊戲，部署於 GitHub Pages。使用 Three.js v0.163（CDN importmap）進行 3D 渲染，Pointer Lock API 控制視角，純靜態 HTML/JS 架構無需建構步驟，Vitest 驗證純邏輯模組（無需瀏覽器環境）。
 
-[Extract from feature spec: primary requirement + technical approach from research]
+## 技術上下文
 
-## Technical Context
+**Language/Version**: JavaScript（ES2020 Modules）  
+**Primary Dependencies**: Three.js v0.163（CDN importmap）、PointerLockControls（Three.js addons）  
+**Storage**: N/A（無持久化，遊戲狀態全在記憶體）  
+**Testing**: Vitest 1.x（`npm test`）  
+**Target Platform**: 現代瀏覽器（Chrome 90+、Firefox 88+、Edge 90+）；GitHub Pages 靜態部署  
+**Project Type**: 靜態網頁遊戲（browser game）  
+**Performance Goals**: 目標 60 FPS；場景保持簡單多邊形  
+**Constraints**: 純靜態前端，無後端、無建構工具；Three.js 透過 CDN 載入  
+**Scale/Scope**: 單一頁面應用，7 個 JS 模組，4 個測試檔
 
-<!--
-  ACTION REQUIRED: Replace the content in this section with the technical details
-  for the project. The structure here is presented in advisory capacity to guide
-  the iteration process.
--->
+## 憲章核查
 
-**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
-**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
-**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
-**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
-**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
-**Project Type**: [e.g., library/cli/web-service/mobile-app/compiler/desktop-app or NEEDS CLARIFICATION]  
-**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
-**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
-**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
+*關卡：Phase 0 研究前必須通過。Phase 1 設計後重新核查。*
 
-## Constitution Check
+- [x] 文件與溝通是否使用繁體中文（必要英文術語除外）
+- [x] 架構是否避免過度設計，且每項技術決策都有需求對應
+- [x] 是否定義 TDD 流程（先測試失敗再實作）
+- [x] 是否規劃每階段 Git 狀態檢查
+- [x] 是否明確保護規格檔（`spec.md`/`plan.md`/`tasks.md`）不被覆蓋
+- [x] 若為網站專案，是否預設為可部署於 GitHub Pages 的靜態前端方案
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+**Phase 1 設計後重新核查結果**：所有條款均符合。Three.js CDN importmap 方案避免 Vite/webpack 建構步驟（過度設計）；遊戲邏輯與 Three.js 分離，方便 Vitest 在 Node.js 環境直接測試；部署目標明確為 GitHub Pages 靜態方案。
 
-- [ ] 文件與溝通是否使用繁體中文（必要英文術語除外）
-- [ ] 架構是否避免過度設計，且每項技術決策都有需求對應
-- [ ] 是否定義 TDD 流程（先測試失敗再實作）
-- [ ] 是否規劃每階段 Git 狀態檢查
-- [ ] 是否明確保護規格檔（`spec.md`/`plan.md`/`tasks.md`）不被覆蓋
-- [ ] 若為網站專案，是否預設為可部署於 GitHub Pages 的靜態前端方案
+## 專案結構
 
-## Project Structure
-
-### Documentation (this feature)
+### 規格文件（本功能）
 
 ```text
-specs/[###-feature]/
-├── plan.md              # This file (/speckit.plan command output)
-├── research.md          # Phase 0 output (/speckit.plan command)
-├── data-model.md        # Phase 1 output (/speckit.plan command)
-├── quickstart.md        # Phase 1 output (/speckit.plan command)
-├── contracts/           # Phase 1 output (/speckit.plan command)
-└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
+specs/001-create-simple-3d-shooter-game/
+├── spec.md          # 功能規格（speckit.specify 輸出）
+├── plan.md          # 本文件（speckit.plan 輸出）
+├── research.md      # Phase 0 研究報告（speckit.plan 輸出）
+├── data-model.md    # Phase 1 資料模型（speckit.plan 輸出）
+├── quickstart.md    # Phase 1 快速上手指南（speckit.plan 輸出）
+├── contracts/       # Phase 1 UI 合約（speckit.plan 輸出）
+│   └── game-ui-contract.md
+└── tasks.md         # Phase 2 任務清單（speckit.tasks 輸出——非本命令產生）
 ```
 
-### Source Code (repository root)
-<!--
-  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
-  for this feature. Delete unused options and expand the chosen structure with
-  real paths (e.g., apps/admin, packages/something). The delivered plan must
-  not include Option labels.
--->
+### 原始碼（Repository 根目錄）
 
 ```text
-# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
+index.html               # 入口：HTML 結構、CSS 樣式、importmap、HUD DOM
 src/
-├── models/
-├── services/
-├── cli/
-└── lib/
-
+├── game.js              # 主迴圈與初始化（Three.js 依賴，整合所有模組）
+├── scene.js             # 場景建置（地板、牆壁、燈光、天空；Three.js 依賴）
+├── player.js            # 玩家邏輯（純 JS，無 Three.js，可單元測試）
+├── enemy.js             # 敵人邏輯（純 JS，無 Three.js，可單元測試）
+├── bullet.js            # 子彈邏輯（純 JS，無 Three.js，可單元測試）
+├── wave.js              # 波次管理（純 JS，無 Three.js，可單元測試）
+└── hud.js               # HUD 更新（DOM 操作，依賴 index.html 元素）
 tests/
-├── contract/
-├── integration/
-└── unit/
-
-# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
-backend/
-├── src/
-│   ├── models/
-│   ├── services/
-│   └── api/
-└── tests/
-
-frontend/
-├── src/
-│   ├── components/
-│   ├── pages/
-│   └── services/
-└── tests/
-
-# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
-api/
-└── [same as backend above]
-
-ios/ or android/
-└── [platform-specific structure: feature modules, UI flows, platform tests]
+├── player.test.js       # 玩家血量、存活狀態單元測試
+├── enemy.test.js        # 敵人移動、受傷單元測試
+├── bullet.test.js       # 子彈飛行、碰撞單元測試
+└── wave.test.js         # 波次遞增、敵人計數單元測試
 ```
 
-**Structure Decision**: [Document the selected structure and reference the real
-directories captured above]
-
-## Complexity Tracking
-
-> **Fill ONLY if Constitution Check has violations that must be justified**
-
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
+**結構決策**：採用「純邏輯模組與渲染模組分離」策略。`player.js`、`enemy.js`、`bullet.js`、`wave.js` 刻意不引入 Three.js，使 Vitest 可在 Node.js 環境直接執行單元測試。`game.js` 負責整合所有模組與 Three.js 渲染，`scene.js` 與 `hud.js` 處理 DOM/Three.js 相關操作。此架構符合「簡潔與 TDD 優先」憲章原則。
